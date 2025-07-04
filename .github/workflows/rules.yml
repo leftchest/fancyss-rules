@@ -1,7 +1,7 @@
 name: Update Fancyss Rules
 on:
   push:
-    branches: [main]
+    branches: [main] # 确保这里是 main
     paths:
       - '.github/workflows/rules.yml'
       - 'rules/auto_update/*'
@@ -25,7 +25,23 @@ jobs:
           sudo apt-get -y install moreutils jq
           cd rules/auto_update
           bash update_rules.sh
+      - name: Check for changes
+        id: check_changes # 添加一个 ID，方便后续引用
+        run: |
+          cd $GITHUB_WORKSPACE
+          # 使用 git status --porcelain 查看是否有未暂存或已暂存的更改
+          # 如果有任何输出，说明有更改
+          if git status --porcelain | grep -q .; then
+            echo "Files have been modified."
+            echo "changes_exist=true" >> "$GITHUB_OUTPUT" # 输出一个变量，让后续步骤可以读取
+          else
+            echo "No changes found."
+            echo "changes_exist=false" >> "$GITHUB_OUTPUT"
+          fi
+          git status # 打印完整的 git status 供调试
       - name: Commit to repo
+        # 只有当 check_changes 步骤检测到有变化时才执行此步骤
+        if: steps.check_changes.outputs.changes_exist == 'true'
         run: |
           cd $GITHUB_WORKSPACE
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -33,6 +49,11 @@ jobs:
           git add rules/.
           git commit -m "Actions Auto Update at $(date +'%Y-%m-%d %H:%M:%S')"
           git push
+      - name: Skip Commit if no changes
+        # 当 check_changes 检测到没有变化时执行此步骤，并打印信息
+        if: steps.check_changes.outputs.changes_exist == 'false'
+        run: |
+          echo "No changes detected, skipping commit and push."
       - name: Delete old workflow runs
         uses: GitRML/delete-workflow-runs@main
         with:
