@@ -6,5 +6,5 @@
 ---
 ### 食用方法：
 - 进入路由器SSH，运行以下命令会自动将`ss_rule_update.sh`脚本中的`url_main`参数指向我的仓库：
-- `sed -i 's/^\turl_main.*/\turl_main="https:\/\/raw.githubusercontent.com\/cpuer\/fancyss-rules\/main\/rules"/g' /koolshare/scripts/ss_rule_update.sh`  （**推荐**，直连GitHub仓库）
+- `sed -i 's/^\turl_main.*/\turl_main="https:\/\/raw.githubusercontent.com\/leftchest\/fancyss-rules\/main\/rules"/g' /koolshare/scripts/ss_rule_update.sh`  （**推荐**，直连GitHub仓库）
 ### 每次fancyss插件更新后都需要\*重新运行一次\*更新`ss_rule_update`脚本的命令
