@@ -1,7 +1,7 @@
 name: Update Fancyss Rules
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - '.github/workflows/rules.yml'
       - 'rules/auto_update/*'
